@@ -42,7 +42,10 @@ class RetrievalManager:
 
     def add_docs_to_vector_store(self):
         docs = GobalUtil.load_docs(self.splits_filepath)
-        self.vector_store_manager.get_retriever().add_documents(documents=docs)
+        self.vector_store_manager.get_retriever().add_documents(
+            documents=docs,
+            ids=[doc.metadata["id"] for doc in docs],
+        )
 
     def add_docs_to_bm25_retriever(self):
         docs = GobalUtil.load_docs(self.splits_filepath)
@@ -85,19 +88,20 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
     import os
 
+    # python -m app.retriever.retrieval
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
     retrieval_manager = RetrievalManager()
 
-    retrieval_manager.add_docs_to_bm25_retriever()
-    # retrieval_manager.add_docs_to_vector_store()
+    # retrieval_manager.add_docs_to_bm25_retriever()
+    retrieval_manager.add_docs_to_vector_store()
 
-    query = "Hver er lejers ret ift. opsigelse?"
+    # query = "Hver er lejers ret ift. opsigelse?"
 
-    start_time = time.time()
-    results = retrieval_manager.retrieve(query)
-    end_time = time.time()
-    execution_time = end_time - start_time
+    # start_time = time.time()
+    # results = retrieval_manager.retrieve(query)
+    # end_time = time.time()
+    # execution_time = end_time - start_time
 
-    GobalUtil.save_data_to_json(results, "doc_results.json")
-    print(f"Execution time for retrieval: {execution_time} seconds")
+    # GobalUtil.save_data_to_json(results, "doc_results.json")
+    # print(f"Execution time for retrieval: {execution_time} seconds")
