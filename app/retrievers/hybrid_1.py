@@ -74,12 +74,12 @@ if __name__ == "__main__":
 
     hybrid = HybridSearch()
 
-    query = "Hvad er mine rettigheder ift opsigelse af lejemål"
+    query = "Kan lejer stilles til ansvar for udgifter det ligger udover depositum?"
 
     start_time = time.time()
     results = hybrid.retrieve(query)
     end_time = time.time()
     execution_time = end_time - start_time
 
-    GobalUtil.save_data_to_json(results, "doc_results.json")
+    GobalUtil.save_data_to_json(results, "hybrid_1_results.json")
     print(f"Execution time for retrieval: {execution_time} seconds")

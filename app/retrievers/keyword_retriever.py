@@ -18,7 +18,7 @@ class KeywordRetriever(BaseRetriever):
     """A retriever that uses keyword search to find relevant documents."""
 
     connection_string: str = "postgresql://admin:admin@localhost:5433/vectordb"
-    k: int = 5
+    k: int = 10
 
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun

@@ -27,22 +27,9 @@ class VectorStoreManager:
         """Returns a retriever from the vector store."""
         if search_kwargs is None:
             search_kwargs = {
-                "k": 5,
+                "k": 10,
             }  # Default search parameters
         return self._vector_store.as_retriever(search_kwargs=search_kwargs)
-
-    # def keyword_search(self, query):
-    #     """Perform a keyword search on the vector store."""
-    #     conn = psycopg2.connect(self._connection_string_keyword)
-    #     try:
-    #         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-    #             cur.execute(
-    #                 "SELECT cmetadata, document FROM langchain_pg_embedding, plainto_tsquery('english', %s) query WHERE to_tsvector('english', document) @@ query ORDER BY ts_rank_cd(to_tsvector('english', document), query) DESC LIMIT 5",
-    #                 (query,),
-    #             )
-    #             return cur.fetchall()
-    #     finally:
-    #         conn.close()
 
 
 # Example usage
