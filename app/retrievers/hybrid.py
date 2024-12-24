@@ -18,54 +18,33 @@ from langchain_community.document_transformers import (
     EmbeddingsRedundantFilter,
 )
 from langchain_community.document_transformers import LongContextReorder
-from app.retriever.vector_store import VectorStoreManager
-from app.retriever.cache import CacheManager
+from app.postgres.vector_store import VectorStoreManager
+from app.helpers.cache import CacheManager
+from app.retrievers.keyword_retriever import KeywordRetriever
 
 
-class RetrievalManager:
+class HybridSearch:
     def __init__(
         self,
-        splits_filename: str = "splits.json",
     ):
-        self.splits_filepath = "app/retriever/data/" + splits_filename
+        # self.vector_store_manager = VectorStoreManager()
 
-        # Initialize CacheManager
-        self.cache_manager = CacheManager()
-
-        # Initialize VectorStoreManager
-        self.vector_store_manager = VectorStoreManager(
-            embeddings=self.cache_manager.cached_embeddings,
-        )
-
-        # Initialize BM25 retriever
-        self.bm25_retriever = None
-
-    def add_docs_to_vector_store(self):
-        docs = GobalUtil.load_docs(self.splits_filepath)
-        self.vector_store_manager.get_retriever().add_documents(
-            documents=docs,
-            ids=[doc.metadata["id"] for doc in docs],
-        )
-
-    def add_docs_to_bm25_retriever(self):
-        docs = GobalUtil.load_docs(self.splits_filepath)
-        self.bm25_retriever = BM25Retriever.from_documents(docs)
+        # self.semantic_retriever = self.vector_store_manager.get_semantic_retriever()
+        self.keyword_retriever = KeywordRetriever()
 
     def retrieve(self, query: str):
 
         lotr = MergerRetriever(
             retrievers=[
-                self.vector_store_manager.get_retriever(),
-                self.bm25_retriever,
+                # self.semantic_retriever,
+                self.keyword_retriever,
             ]
         )
 
-        filter = EmbeddingsRedundantFilter(
-            embeddings=self.cache_manager.cached_embeddings
-        )
+        filter = EmbeddingsRedundantFilter(embeddings=CacheManager().cached_embeddings)
         cohere_rerank_model = CohereRerank(
             model="rerank-multilingual-v3.0",
-            top_n=5,
+            top_n=10,
         )
 
         reordering = LongContextReorder()
@@ -91,17 +70,14 @@ if __name__ == "__main__":
     # python -m app.retriever.retrieval
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-    retrieval_manager = RetrievalManager()
+    hybrid = HybridSearch()
 
-    # retrieval_manager.add_docs_to_bm25_retriever()
-    retrieval_manager.add_docs_to_vector_store()
+    query = "Hvad er mine rettigheder ift opsigelse af lejemål"
 
-    # query = "Hver er lejers ret ift. opsigelse?"
+    start_time = time.time()
+    results = hybrid.retrieve(query)
+    end_time = time.time()
+    execution_time = end_time - start_time
 
-    # start_time = time.time()
-    # results = retrieval_manager.retrieve(query)
-    # end_time = time.time()
-    # execution_time = end_time - start_time
-
-    # GobalUtil.save_data_to_json(results, "doc_results.json")
-    # print(f"Execution time for retrieval: {execution_time} seconds")
+    GobalUtil.save_data_to_json(results, "doc_results.json")
+    print(f"Execution time for retrieval: {execution_time} seconds")

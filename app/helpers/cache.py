@@ -6,11 +6,21 @@ from langchain_openai import OpenAIEmbeddings
 
 
 class CacheManager:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(CacheManager, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(
         self,
         redis_url: str = "redis://localhost:6379",
         underlying_embeddings=OpenAIEmbeddings(),
     ):
+        if self._initialized:
+            return
         self._client = get_client(redis_url)
         self._store = RedisStore(client=self._client)
         self._cached_embeddings = CacheBackedEmbeddings.from_bytes_store(
@@ -19,6 +29,7 @@ class CacheManager:
             namespace="cached_embeddings:",
             query_embedding_cache=True,
         )
+        self._initialized = True
 
     def set_values(self, key_value_pairs):
         """Set multiple key-value pairs in the Redis store."""
