@@ -27,16 +27,16 @@ class HybridSearch:
     def __init__(
         self,
     ):
-        # self.vector_store_manager = VectorStoreManager()
+        self.vector_store_manager = VectorStoreManager()
 
-        # self.semantic_retriever = self.vector_store_manager.get_semantic_retriever()
+        self.semantic_retriever = self.vector_store_manager.get_semantic_retriever()
         self.keyword_retriever = KeywordRetriever()
 
     def retrieve(self, query: str):
 
         lotr = MergerRetriever(
             retrievers=[
-                # self.semantic_retriever,
+                self.semantic_retriever,
                 self.keyword_retriever,
             ]
         )
@@ -59,7 +59,9 @@ class HybridSearch:
             base_compressor=pipeline, base_retriever=lotr
         )
         reranked_combined_results = compression_retriever.invoke(query)
-        return reranked_combined_results
+
+        results = GobalUtil.filter_documents_by_relevance(reranked_combined_results)
+        return results
 
 
 # Example usage

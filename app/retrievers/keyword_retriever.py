@@ -9,14 +9,9 @@ import psycopg2
 import psycopg2.extras
 import asyncpg
 import json
-import logging
+
 
 from app.helpers.util import GobalUtil
-
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 
 class KeywordRetriever(BaseRetriever):
@@ -32,30 +27,23 @@ class KeywordRetriever(BaseRetriever):
         conn = psycopg2.connect(self.connection_string)
         try:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-                logger.debug(f"Executing query with: {query}")
                 cur.execute(
                     """
-                    SELECT id, cmetadata, document 
-                    FROM langchain_pg_embedding, websearch_to_tsquery('english', %s) query 
-                    WHERE to_tsvector('english', document) @@ query 
-                    ORDER BY ts_rank(to_tsvector('english', document), query) DESC 
+                    SELECT id, cmetadata, document, ts_rank(document_tsvector, websearch_to_tsquery('danish', %s)) AS rank
+                    FROM langchain_pg_embedding
+                    ORDER BY rank DESC
                     LIMIT %s
                     """,
                     (query, self.k),
                 )
                 rows = cur.fetchall()
-                logger.debug(f"Rows fetched: {rows}")
-                if not rows:
-                    logger.debug(
-                        "No rows returned. Check if the query terms match the document content."
-                    )
                 documents = []
                 for row in rows:
                     documents.append(
                         Document(
                             id=row["id"],
                             page_content=row["document"],
-                            metadata=json.loads(row["cmetadata"]),
+                            metadata=row["cmetadata"],
                             type="Document",
                         )
                     )
@@ -71,10 +59,9 @@ class KeywordRetriever(BaseRetriever):
         try:
             rows = await conn.fetch(
                 """
-                SELECT id, cmetadata, document 
-                FROM langchain_pg_embedding, websearch_to_tsquery('english', $1) query 
-                WHERE to_tsvector('english', document) @@ query 
-                ORDER BY ts_rank(to_tsvector('english', document), query) DESC 
+                SELECT id, cmetadata, document, ts_rank(document_tsvector, websearch_to_tsquery('danish', $1)) AS rank
+                FROM langchain_pg_embedding
+                ORDER BY rank DESC
                 LIMIT $2
                 """,
                 query,

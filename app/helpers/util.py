@@ -39,3 +39,13 @@ class GobalUtil:
 
         data = loader.load()
         return data
+
+    @staticmethod
+    def filter_documents_by_relevance(
+        documents: List[Document], threshold: float = 0.70
+    ) -> List[Document]:
+        return [
+            doc
+            for doc in documents
+            if doc.metadata.get("relevance_score", 0) >= threshold
+        ]
