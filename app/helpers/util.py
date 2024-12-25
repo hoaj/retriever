@@ -49,3 +49,14 @@ class GobalUtil:
             for doc in documents
             if doc.metadata.get("relevance_score", 0) >= threshold
         ]
+
+    @staticmethod
+    def get_top_documents(documents: List[Document], count: int) -> List[Document]:
+        """
+        Returns the top 'count' documents from the list.
+
+        :param documents: List of Document objects.
+        :param count: Number of documents to return from the start of the list.
+        :return: List of top 'count' Document objects.
+        """
+        return documents[:count]

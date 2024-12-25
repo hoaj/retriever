@@ -54,6 +54,8 @@ class HybridSearch:
         reranked_combined_results = compression_retriever.invoke(query)
 
         results = GobalUtil.filter_documents_by_relevance(reranked_combined_results)
+
+        results = GobalUtil.get_top_documents(results, 5)
         return results
 
 

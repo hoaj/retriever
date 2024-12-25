@@ -25,7 +25,7 @@ class HybridSearch:
 
         results = ensemble_retriever.invoke(query)
 
-        # results = GobalUtil.filter_documents_by_relevance(results)
+        results = GobalUtil.get_top_documents(results, 5)
         return results
 
 
