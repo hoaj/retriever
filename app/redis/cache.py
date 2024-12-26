@@ -16,7 +16,7 @@ class CacheManager:
 
     def __init__(
         self,
-        redis_url: str = "redis://localhost:6379",
+        redis_url: str = "redis://redis:6379",
         underlying_embeddings=OpenAIEmbeddings(),
     ):
         if self._initialized:

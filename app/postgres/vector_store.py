@@ -6,7 +6,7 @@ from app.redis.cache import CacheManager
 class VectorStoreManager:
     def __init__(
         self,
-        connection_string: str = "postgresql+psycopg2://admin:admin@localhost:5433/vectordb",
+        connection_string: str = "postgresql+psycopg2://admin:admin@postgres:5432/vectordb",
         collection_name: str = "vectordb",
     ):
         self._connection_string = connection_string
@@ -16,7 +16,7 @@ class VectorStoreManager:
             collection_name=collection_name,
         )
         self._connection_string_keyword = (
-            "postgresql://admin:admin@localhost:5433/vectordb"
+            "postgresql://admin:admin@postgres:5432/vectordb"
         )
 
     def get_semantic_retriever(self, search_kwargs=None):
