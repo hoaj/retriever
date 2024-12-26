@@ -1,7 +1,7 @@
 import os
 import time
 from langchain_cohere import CohereRerank
-from app.helpers.util import GobalUtil
+from app.util import Util
 from langchain.retrievers import (
     ContextualCompressionRetriever,
     MergerRetriever,
@@ -56,9 +56,9 @@ class HybridSearch1(BaseRetriever):
         )
         reranked_combined_results = compression_retriever.invoke(query)
 
-        results = GobalUtil.filter_documents_by_relevance(reranked_combined_results)
+        results = Util.filter_documents_by_relevance(reranked_combined_results)
 
-        results = GobalUtil.get_top_documents(results, 5)
+        results = Util.get_top_documents(results, 5)
         return results
 
 
@@ -84,5 +84,5 @@ if __name__ == "__main__":
     end_time = time.time()
     execution_time = end_time - start_time
 
-    GobalUtil.save_data_to_json(results, "hybrid_1_results.json")
+    Util.save_data_to_json(results, "hybrid_1_results.json")
     print(f"Execution time for retrieval: {execution_time} seconds")

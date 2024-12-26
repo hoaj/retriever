@@ -1,7 +1,7 @@
 import os
 import time
 from langchain.retrievers import EnsembleRetriever
-from app.helpers.util import GobalUtil
+from app.util import Util
 from app.postgres.vector_store import VectorStoreManager
 from app.retrievers.keyword_retriever import KeywordRetriever
 from langchain_core.retrievers import BaseRetriever
@@ -30,7 +30,7 @@ class HybridSearch2(BaseRetriever):
 
         results = ensemble_retriever.invoke(query)
 
-        results = GobalUtil.get_top_documents(results, 5)
+        results = Util.get_top_documents(results, 5)
         return results
 
 
@@ -54,5 +54,5 @@ if __name__ == "__main__":
     end_time = time.time()
     execution_time = end_time - start_time
 
-    GobalUtil.save_data_to_json(results, "hybrid_2_results.json")
+    Util.save_data_to_json(results, "hybrid_2_results.json")
     print(f"Execution time for retrieval: {execution_time} seconds")

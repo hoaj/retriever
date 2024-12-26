@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from langchain_core.documents import Document
 
 
-class GobalUtil:
+class Util:
     @staticmethod
     def save_data_to_json(data: Any, output_file: str):
         class CustomEncoder(json.JSONEncoder):
@@ -32,7 +32,7 @@ class GobalUtil:
         loader = JSONLoader(
             file_path=file_path,
             jq_schema=".[]",
-            metadata_func=GobalUtil.metadata_func,
+            metadata_func=Util.metadata_func,
             content_key=".page_content",
             is_content_key_jq_parsable=True,
         )
@@ -52,11 +52,4 @@ class GobalUtil:
 
     @staticmethod
     def get_top_documents(documents: List[Document], count: int) -> List[Document]:
-        """
-        Returns the top 'count' documents from the list.
-
-        :param documents: List of Document objects.
-        :param count: Number of documents to return from the start of the list.
-        :return: List of top 'count' Document objects.
-        """
         return documents[:count]

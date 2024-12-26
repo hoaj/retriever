@@ -9,15 +9,16 @@ router = APIRouter()
 
 vector_store_manager: VectorStoreManager = VectorStoreManager()
 semantic_retriever = vector_store_manager.get_semantic_retriever()
+keyword_retriever = KeywordRetriever()
 
 hybrid1 = HybridSearch1(
     semantic_retriever=semantic_retriever,
-    keyword_retriever=KeywordRetriever(),
+    keyword_retriever=keyword_retriever,
 )
 
 hybrid2 = HybridSearch2(
     semantic_retriever=semantic_retriever,
-    keyword_retriever=KeywordRetriever(),
+    keyword_retriever=keyword_retriever,
 )
 
 add_routes(router, hybrid1, path="/hybrid1")

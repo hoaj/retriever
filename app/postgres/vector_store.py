@@ -3,7 +3,7 @@ import psycopg2.extras
 from langchain_postgres.vectorstores import PGVector
 from langchain_openai import OpenAIEmbeddings
 
-from app.helpers.util import GobalUtil
+from app.util import Util
 from app.redis.cache import CacheManager
 
 
@@ -50,8 +50,8 @@ if __name__ == "__main__":
         "Opsigelse",
         "mmr",
     )
-    GobalUtil.save_data_to_json(result_keyword, "result_keyword.json")
-    GobalUtil.save_data_to_json(result_semantic, "result_semantic.json")
+    Util.save_data_to_json(result_keyword, "result_keyword.json")
+    Util.save_data_to_json(result_semantic, "result_semantic.json")
 
     # docs = GobalUtil.load_docs("app/retriever/data/splits.json")
     # retriever.add_documents(

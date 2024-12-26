@@ -11,7 +11,7 @@ import asyncpg
 import json
 
 
-from app.helpers.util import GobalUtil
+from app.util import Util
 
 
 class KeywordRetriever(BaseRetriever):
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     # Test the synchronous method
     try:
         documents = retriever.invoke(sample_query)
-        GobalUtil.save_data_to_json(documents, "synchronous_result_keyword.json")
+        Util.save_data_to_json(documents, "synchronous_result_keyword.json")
     except Exception as e:
         print(f"Error during synchronous retrieval: {e}")
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     async def test_async_retrieval():
         try:
             documents = await retriever.ainvoke(sample_query)
-            GobalUtil.save_data_to_json(documents, "asynchronous_result_keyword.json")
+            Util.save_data_to_json(documents, "asynchronous_result_keyword.json")
         except Exception as e:
             print(f"Error during asynchronous retrieval: {e}")
 
