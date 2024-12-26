@@ -1,5 +1,5 @@
 from langchain_postgres.vectorstores import PGVector
-from app.util import Util
+from app.util.util import Util
 from app.redis.cache import CacheManager
 
 

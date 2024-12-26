@@ -1,7 +1,7 @@
 import os
 import time
 from langchain.retrievers import EnsembleRetriever
-from app.util import Util
+from app.util.util import Util
 from app.postgres.vector_store import VectorStoreManager
 from app.retrievers.keyword_retriever import KeywordRetriever
 from langchain_core.retrievers import BaseRetriever

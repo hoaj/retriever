@@ -11,7 +11,7 @@ import asyncpg
 import json
 
 
-from app.util import Util
+from app.util.util import Util
 
 
 class KeywordRetriever(BaseRetriever):

@@ -1,7 +1,7 @@
 import os
 import time
 from langchain_cohere import CohereRerank
-from app.util import Util
+from app.util.util import Util
 from langchain.retrievers import (
     ContextualCompressionRetriever,
     MergerRetriever,
