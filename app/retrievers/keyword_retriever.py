@@ -17,7 +17,7 @@ from app.util import Util
 class KeywordRetriever(BaseRetriever):
     """A retriever that uses keyword search to find relevant documents."""
 
-    connection_string: str = "postgresql://admin:admin@localhost:5433/vectordb"
+    connection_string: str = "postgresql://admin:admin@postgres:5432/vectordb"
     k: int = 10
 
     def _get_relevant_documents(
