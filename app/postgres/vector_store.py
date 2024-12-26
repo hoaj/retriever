@@ -1,8 +1,4 @@
-import psycopg2
-import psycopg2.extras
 from langchain_postgres.vectorstores import PGVector
-from langchain_openai import OpenAIEmbeddings
-
 from app.util import Util
 from app.redis.cache import CacheManager
 

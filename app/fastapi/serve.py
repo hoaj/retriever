@@ -1,10 +1,12 @@
 from fastapi import FastAPI
-from app.routes import retrieve_routes
+from app.fastapi.routes import setup_routes
 from fastapi.responses import RedirectResponse
+import uvicorn
 
 app = FastAPI()
 
-app.include_router(retrieve_routes.router)
+routes = setup_routes()
+app.include_router(routes)
 
 
 @app.get("/")
@@ -13,6 +15,4 @@ async def redirect_root_to_docs():
 
 
 if __name__ == "__main__":
-    import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)
