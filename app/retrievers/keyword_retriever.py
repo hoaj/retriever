@@ -93,7 +93,6 @@ if __name__ == "__main__":
     sample_query = "Hvor lang tid opsigelse har jeg?"
 
     # Test the synchronous method
-    print("Testing synchronous retrieval:")
     try:
         documents = retriever.invoke(sample_query)
         GobalUtil.save_data_to_json(documents, "synchronous_result_keyword.json")
@@ -102,7 +101,6 @@ if __name__ == "__main__":
 
     # Test the asynchronous method
     async def test_async_retrieval():
-        print("\nTesting asynchronous retrieval:")
         try:
             documents = await retriever.ainvoke(sample_query)
             GobalUtil.save_data_to_json(documents, "asynchronous_result_keyword.json")

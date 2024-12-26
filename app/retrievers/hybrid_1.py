@@ -14,18 +14,21 @@ from langchain_community.document_transformers import LongContextReorder
 from app.postgres.vector_store import VectorStoreManager
 from app.helpers.cache import CacheManager
 from app.retrievers.keyword_retriever import KeywordRetriever
+from langchain_core.retrievers import BaseRetriever
+from langchain_core.vectorstores import VectorStoreRetriever
+from typing import List
+from langchain_core.callbacks import CallbackManagerForRetrieverRun
+from langchain_core.documents import Document
 
 
-class HybridSearch:
-    def __init__(
-        self,
-    ):
-        self.vector_store_manager = VectorStoreManager()
+class HybridSearch1(BaseRetriever):
 
-        self.semantic_retriever = self.vector_store_manager.get_semantic_retriever()
-        self.keyword_retriever = KeywordRetriever()
+    semantic_retriever: VectorStoreRetriever
+    keyword_retriever: KeywordRetriever
 
-    def retrieve(self, query: str):
+    def _get_relevant_documents(
+        self, query: str, *, run_manager: CallbackManagerForRetrieverRun
+    ) -> List[Document]:
 
         lotr = MergerRetriever(
             retrievers=[
@@ -66,13 +69,18 @@ if __name__ == "__main__":
 
     # python -m app.retriever.retrieval
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+    vector_store_manager: VectorStoreManager = VectorStoreManager()
+    semantic_retriever = vector_store_manager.get_semantic_retriever()
 
-    hybrid = HybridSearch()
+    hybrid = HybridSearch1(
+        semantic_retriever=semantic_retriever,
+        keyword_retriever=KeywordRetriever(),
+    )
 
     query = "Kan lejer stilles til ansvar for udgifter det ligger udover depositum?"
 
     start_time = time.time()
-    results = hybrid.retrieve(query)
+    results = hybrid.invoke(query)
     end_time = time.time()
     execution_time = end_time - start_time
 
