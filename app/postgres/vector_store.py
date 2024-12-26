@@ -4,7 +4,7 @@ from langchain_postgres.vectorstores import PGVector
 from langchain_openai import OpenAIEmbeddings
 
 from app.helpers.util import GobalUtil
-from app.helpers.cache import CacheManager
+from app.redis.cache import CacheManager
 
 
 class VectorStoreManager:
@@ -36,7 +36,7 @@ class VectorStoreManager:
 if __name__ == "__main__":
     # run with this cmd: python -m app.retriever.vector_store
     from dotenv import load_dotenv
-    from app.helpers.cache import CacheManager
+    from app.redis.cache import CacheManager
     import os
 
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))

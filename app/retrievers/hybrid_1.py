@@ -12,7 +12,7 @@ from langchain_community.document_transformers import (
 )
 from langchain_community.document_transformers import LongContextReorder
 from app.postgres.vector_store import VectorStoreManager
-from app.helpers.cache import CacheManager
+from app.redis.cache import CacheManager
 from app.retrievers.keyword_retriever import KeywordRetriever
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.vectorstores import VectorStoreRetriever
