@@ -1,3 +1,5 @@
+from typing import ClassVar
+import os
 from typing import List
 from langchain_core.callbacks import (
     CallbackManagerForRetrieverRun,
@@ -17,7 +19,18 @@ from app.util.util import Util
 class KeywordRetriever(BaseRetriever):
     """A retriever that uses keyword search to find relevant documents."""
 
-    connection_string: str = "postgresql://admin:admin@postgres:5432/vectordb"
+    # Load environment variables
+    db_user: ClassVar[str] = os.getenv("DB_USER", "admin")
+    db_password: ClassVar[str] = os.getenv("DB_PASSWORD", "admin")
+    db_host: ClassVar[str] = (
+        "postgres" if os.getenv("ENV", "local") == "compose" else "localhost"
+    )
+    db_port: ClassVar[str] = os.getenv("DB_PORT", "5432")
+    db_name: ClassVar[str] = os.getenv("DB_NAME", "vectordb")
+
+    connection_string: str = (
+        f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+    )
     k: int = 10
 
     def _get_relevant_documents(

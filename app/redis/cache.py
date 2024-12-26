@@ -1,3 +1,4 @@
+import os
 from typing import List
 from langchain_community.storage import RedisStore
 from langchain_community.utilities.redis import get_client
@@ -16,11 +17,17 @@ class CacheManager:
 
     def __init__(
         self,
-        redis_url: str = "redis://redis:6379",
+        redis_url: str = None,
         underlying_embeddings=OpenAIEmbeddings(),
     ):
         if self._initialized:
             return
+
+        # Load environment variables
+        redis_host = "redis" if os.getenv("ENV", "local") == "compose" else "localhost"
+        redis_port = os.getenv("REDIS_PORT", "6379")
+        redis_url = redis_url or f"redis://{redis_host}:{redis_port}"
+
         self._client = get_client(redis_url)
         self._store = RedisStore(client=self._client)
         self._cached_embeddings = CacheBackedEmbeddings.from_bytes_store(

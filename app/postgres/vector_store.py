@@ -1,3 +1,4 @@
+import os
 from langchain_postgres.vectorstores import PGVector
 from app.util.util import Util
 from app.redis.cache import CacheManager
@@ -6,17 +7,24 @@ from app.redis.cache import CacheManager
 class VectorStoreManager:
     def __init__(
         self,
-        connection_string: str = "postgresql+psycopg2://admin:admin@postgres:5432/vectordb",
         collection_name: str = "vectordb",
     ):
-        self._connection_string = connection_string
+        # Load environment variables
+        db_user = os.getenv("DB_USER", "admin")
+        db_password = os.getenv("DB_PASSWORD", "admin")
+        db_host = "postgres" if os.getenv("ENV", "local") == "compose" else "localhost"
+        db_port = os.getenv("DB_PORT", "5432")
+        db_name = os.getenv("DB_NAME", "vectordb")
+
+        self._connection_string = f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
         self._vector_store = PGVector(
             embeddings=CacheManager().cached_embeddings,
-            connection=connection_string,
+            connection=self._connection_string,
             collection_name=collection_name,
         )
         self._connection_string_keyword = (
-            "postgresql://admin:admin@postgres:5432/vectordb"
+            f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         )
 
     def get_semantic_retriever(self, search_kwargs=None):
